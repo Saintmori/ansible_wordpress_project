@@ -1,0 +1,8 @@
+---
+all:
+  hosts:
+  children:
+    app:
+      hosts:
+        webserver:
+          ansible_host: 198.211.116.219

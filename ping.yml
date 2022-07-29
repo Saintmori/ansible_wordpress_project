@@ -1,0 +1,6 @@
+---
+- name: pingin server
+  hosts: app
+  tasks:
+    - name: ping
+      ping:
