@@ -1,0 +1,17 @@
+---
+- name: adding users
+  hosts: webserver
+  gather_facts: no
+  tasks:
+    - name: adding user
+      user:
+        name: ansible
+        uid: 2500
+        groups: wheel
+    - name: copy ssh key
+      copy:
+        src: /home/ansible/.ssh/id.rsa.pub
+        dest: /home/ansible/.ssh/known_hosts
+        owner: ansible
+        group: wheel
+        remote_src: yes

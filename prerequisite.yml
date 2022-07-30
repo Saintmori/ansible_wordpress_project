@@ -1,0 +1,16 @@
+---
+- name: adding users
+  hosts: webserver
+  gather_facts: no
+  tasks:
+    - name: adding user
+      user:
+        name: ansible
+        uid: 2500
+        groups: wheel
+    - name: add public key
+      authorized_key:
+        user: ansible
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    

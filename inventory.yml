@@ -5,4 +5,4 @@ all:
     app:
       hosts:
         webserver:
-          ansible_host: 198.211.116.219
+          ansible_host: 10.108.0.3
