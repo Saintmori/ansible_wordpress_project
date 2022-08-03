@@ -1,6 +1,6 @@
 ---
 - name: pingin server
-  hosts: app
+  hosts: webserver
   tasks:
     - name: ping
       ping:

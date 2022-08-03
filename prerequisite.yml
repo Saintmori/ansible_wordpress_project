@@ -1,13 +1,13 @@
 ---
 - name: adding users
-  hosts: webserver
+  hosts: db
   gather_facts: no
   tasks:
     - name: adding user
       user:
         name: ansible
         uid: 2500
-        groups: wheel
+        groups: sudo
     - name: add public key
       authorized_key:
         user: ansible

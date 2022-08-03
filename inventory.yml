@@ -5,4 +5,8 @@ all:
     app:
       hosts:
         webserver:
+          ansible_host: 10.108.0.4
+    db:
+      hosts: 
+        database:
           ansible_host: 10.108.0.3

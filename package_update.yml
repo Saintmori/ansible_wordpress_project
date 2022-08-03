@@ -1,0 +1,11 @@
+---
+- name: update all packages
+  hosts: webserver
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: upgrade all packages
+      when: ansible_facts['pkg_mgr'] == "dnf"
+      dnf:
+        name: '*'
+        state: latest
