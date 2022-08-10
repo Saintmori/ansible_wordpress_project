@@ -1,0 +1,51 @@
+---
+- name: manageing mariadb on database server
+  hosts: database
+  gather_facts: no
+  become: yes
+  pre_tasks:
+    - name: installing firewall and managing it
+      apt:
+        name: firewalld
+        state: present
+    - name: Ensure SELinux is set to enforcing mode
+      lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: '^bind-address            ='
+        line: 'bind-address            = 0.0.0.0'   
+    
+    - name: allowing port 3306 
+      firewalld:
+        port: 3306/tcp
+        zone: public
+        permanent: true
+        state: enabled 
+        immediate: yes 
+      notify: restart mariadb 
+          
+  tasks:
+    - name: first make sure mariadb is installed
+      shell: mariadb --version
+      register: result
+    - name: managing mariadb
+      block:
+        - name: adding database called wpdb
+          mysql_db: #this module won't work on your database if you don't have python3-pymysql additionally installed.
+            name: wpdb
+            state: present
+            login_unix_socket: /var/run/mysqld/mysqld.sock #authenticate using this socket as root user
+        
+        - name: adding user called wpuser
+          mysql_user:
+            name: wpuser
+            state: present
+            host: 10.108.0.4 #the ip addr of the host that will the user connect to database
+            priv: 'wpuser.wpdb:ALL' 
+            login_unix_socket: /var/run/mysqld/mysqld.sock
+            login_host: 10.108.0.3 #ip address of the server that database is running on
+      when: result is succeeded
+  handlers:
+    - name: restart mariadb
+      systemd:
+        name: mariadb
+        state: restarted

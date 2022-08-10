@@ -1,13 +1,25 @@
 ---
 - name: adding users
-  hosts: db
-  gather_facts: no
+  hosts: webserver, database
+  gather_facts: yes
+  vars:
+    - user_pass: "$6$myrandomsalt$qMpBEIY5agCrLIJnNNsaXIg/nxU3TZN/1R2cx8CHlVriSdozJ52Q1eYvEVCDKG0QMiCKiZQAaB6ZkRuufnTmg/"
   tasks:
-    - name: adding user
+    - name: adding user in Centos server
+      when: ansible_facts['distribution'] == "CentOS"
       user:
         name: ansible
         uid: 2500
+        groups: wheel
+        password: "{{ user_pass }}"
+    - name: adding user in ubuntu server
+      when: ansible_facts['distribution'] == "Ubuntu"
+      user:
+        name: ansible
         groups: sudo
+        uid: 2500
+        password: "{{ user_pass }}"
+        shell: /bin/bash
     - name: add public key
       authorized_key:
         user: ansible
